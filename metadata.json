@@ -1,0 +1,8 @@
+{
+  "name": "SafeDrive",
+  "description": "A streamlined driving safety application that focuses on accurate trip tracking, a simplified user experience, and rewarding safe driving habits. It provides real-time speed and distance monitoring without unnecessary gamification.",
+  "requestFramePermissions": [
+    "geolocation",
+    "microphone"
+  ]
+}

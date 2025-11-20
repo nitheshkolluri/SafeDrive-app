@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+
+    <!-- PWA Configuration -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SafeDrive">
+    <meta name="theme-color" content="#0F172A">
+
+    <title>SafeDrive</title>
+
+    <!-- PWA Icons -->
+    <!-- IMPORTANT: iOS Safari ignores SVG icons for Home Screen. We use a placeholder here and replace it via JS below with a PNG data URI. -->
+    <link id="apple-icon" rel="apple-touch-icon"
+        href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN88F/qPwAI8wNPc0EU8AAAAABJRU5ErkJggg==">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg">
+    <link rel="manifest" href="/manifest.json">
+
+    <!-- Tailwind CSS via Vite Build -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Poppins:wght@600;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        html,
+        body {
+            height: 100%;
+            height: 100dvh;
+            /* Modern mobile browser support */
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            overscroll-behavior: none;
+            /* Prevent pull-to-refresh on mobile */
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .font-poppins {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        /* Global Invisible Scrollbar */
+        * {
+            scrollbar-width: none !important;
+            /* Firefox */
+            -ms-overflow-style: none !important;
+            /* IE and Edge */
+            -webkit-tap-highlight-color: transparent;
+            /* Remove tap highlight on mobile */
+        }
+
+        *::-webkit-scrollbar {
+            display: none !important;
+            /* Chrome, Safari, Opera */
+            width: 0 !important;
+            height: 0 !important;
+        }
+
+        /* Safe Area Handling for iPhones */
+        .pb-safe {
+            padding-bottom: env(safe-area-inset-bottom, 20px);
+        }
+
+        .text-gradient {
+            background: linear-gradient(to right, #8B5CF6, #EC4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+
+    <!-- CRITICAL FIX: iOS Icon Generator -->
+    <script>
+        (function () {
+            // Create high-res canvas for icon generation
+            var size = 512;
+            var canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            var ctx = canvas.getContext('2d');
+
+            // 1. Draw Background (Dark Blue)
+            ctx.fillStyle = '#0F172A';
+            ctx.fillRect(0, 0, size, size);
+
+            // 2. Draw Shield Logo (Scaled geometry from logo.svg)
+            ctx.save();
+            ctx.translate(size / 2, size / 2);
+            ctx.scale(4.5, 4.5); // Scale up for high res
+            ctx.translate(-50, -50); // Center path
+
+            // Shield Path
+            ctx.beginPath();
+            ctx.moveTo(25, 35);
+            ctx.arcTo(40, 20, 60, 20, 15); // Top right curve attempt matching path
+            // Simplified path drawing based on logo.svg geometry: M25,35 a15,15 0 0,1 15,-15 h20 a15,15 0 0,1 15,15 v25 a10,10 0 0,1 -10,10 h-30 a10,10 0 0,1 -10,-10 z
+            // Recreating path manually for canvas:
+            // M 25 35
+            // Arc to 40 20 radius 15 (Top Left Corner)
+            // Line to 60 20 (Top Edge)
+            // Arc to 75 35 radius 15 (Top Right Corner)
+            // Line to 75 60 (Right Edge)
+            // Arc to 65 70 radius 10 (Bottom Right Corner)
+            // Line to 35 70 (Bottom Edge)
+            // Arc to 25 60 radius 10 (Bottom Left Corner)
+            // Close
+
+            ctx.fillStyle = 'white';
+            // Standard rounded rect shield shape
+            ctx.beginPath();
+            ctx.moveTo(40, 20);
+            ctx.lineTo(60, 20);
+            ctx.quadraticCurveTo(75, 20, 75, 35);
+            ctx.lineTo(75, 60);
+            ctx.quadraticCurveTo(75, 70, 65, 70);
+            ctx.lineTo(35, 70);
+            ctx.quadraticCurveTo(25, 70, 25, 60);
+            ctx.lineTo(25, 35);
+            ctx.quadraticCurveTo(25, 20, 40, 20);
+            ctx.fill();
+
+            // Internal Details (Slots)
+            ctx.fillStyle = '#0F172A';
+            // Circle
+            ctx.beginPath();
+            ctx.arc(50, 40, 8, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Bars (White rects on original were additive, but here background is blue, shape is white)
+            // In original logo.svg: <rect fill="white" x="32" y="68" ...> wait, those were outside the main path in the group?
+            // Original: <rect fill="white" x="32" y="68" width="10" height="14" />
+            // Actually the shield is white. The background is blue. The rects are white, likely extending the shield?
+            // Let's simpler: Just the main shield with the hole.
+
+            ctx.restore();
+
+            // 3. Convert to PNG Data URI and update Link Tag
+            var dataURL = canvas.toDataURL('image/png');
+            var link = document.getElementById('apple-icon');
+            if (link) {
+                link.href = dataURL;
+            }
+        })();
+    </script>
+
+    <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@19.2.0/",
+    "react": "https://aistudiocdn.com/react@19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@19.2.0/",
+    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.30.0"
+  }
+}
+</script>
+
+</head>
+
+<body
+    class="bg-light-50 dark:bg-dark-950 text-slate-900 dark:text-white transition-colors duration-300 overflow-hidden fixed inset-0">
+    <div id="root" class="h-full w-full overflow-hidden"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+
+</html>
