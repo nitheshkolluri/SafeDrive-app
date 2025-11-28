@@ -1,127 +1,91 @@
-# SafeDrive PWA 🚗💨
+# SafeDrive - Smart Navigation & Rewards
 
-SafeDrive is a premium, mobile-first Progressive Web App (PWA) designed to gamify safe driving. It uses advanced telematics to monitor driving behavior, award points for safety, and provide real-time navigation.
+![SafeDrive Logo](https://raw.githubusercontent.com/user-attachments/assets/b248443e-d958-466d-8869-7c8a6f3b0e16)
 
-## 🌟 Features
+**SafeDrive** is a production-grade, enterprise-level navigation application designed to promote safer driving habits through a sophisticated rewards system. It combines a seamless, Google-Maps-like user experience with an intelligent business model, making it a complete and deployable platform.
 
-### 🛡️ Advanced Telematics
-- **Real-time G-Force Monitoring**: Detects harsh braking, acceleration, and cornering.
-- **Pothole Detection**: Distinguishes between crashes and road hazards using vertical accelerometer data.
-- **Safe Streak**: Earn multipliers (x2) for continuous safe driving.
+---
 
-### 🎮 Gamification
-- **Tier System**: Bronze, Silver, Gold, and Diamond tiers based on lifetime points.
-- **Mystery Crates**: Daily rewards for consistent users.
-- **Partner Marketplace**: Redeem points for real-world offers.
-- **Challenges**: Weekly goals for extra XP.
+## ✨ Key Features
 
-### 🗺️ Navigation & HUD
-- **Turn-by-Turn Navigation**: Powered by Google Maps Platform.
-- **Smart HUD**: Displays speed, speed limits, and safety alerts without distraction.
-- **Voice Guidance**: Text-to-Speech alerts for safety events.
+-   **Intuitive Turn-by-Turn Navigation:** A clean, full-screen map interface with a floating search bar, saved places (Home/Work), and interactive points of interest (POIs).
+-   **Advanced Driving Analytics:** Real-time monitoring of speed, acceleration, braking, and turning to generate a comprehensive safety score for each trip.
+-   **Rewards & Gamification:** Earn points for safe driving and redeem them for exclusive rewards from partner businesses.
+-   **Multi-Modal Driver Verification:** Sophisticated checks to ensure accurate data collection, whether the phone is mounted, handheld, or connected to CarPlay.
+-   **Dedicated Support Hub:** An in-app chatbot for instant answers and a direct line to customer support for critical issues.
+-   **Professional & Secure Architecture:** Built with security best practices and containerized with Docker for scalable, production-ready deployment.
 
-### 🔒 Security & Auth
-- **Guest Mode**: Try before you sign up.
-- **Seamless Upgrade**: Transfer guest progress to a secure account.
-- **Driver Verification**: Spirit-level calibration to ensure phone stability.
+## 🛠️ Tech Stack
+
+-   **Frontend:** React, TypeScript, Tailwind CSS
+-   **Mapping:** Leaflet.js, OpenStreetMap, Leaflet Routing Machine
+--   **Deployment:** Docker, Nginx
 
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js (v18+)
-- npm (v9+)
-- Google Maps API Key (configured in `utils/mapLoader.ts`)
 
-### Installation
+-   Node.js (v18 or later)
+-   A modern web browser with location services enabled.
+-   Docker (for containerized deployment)
+
+### Running Locally
 
 1.  **Clone the repository:**
     ```bash
-    git clone https://github.com/yourusername/safedrive.git
-    cd safedrive
+    git clone <repository-url>
+    cd safedrive-app
     ```
 
-2.  **Install dependencies:**
+2.  **Serve the application:**
+    Since this project uses modern ES modules and has no external npm dependencies, you can serve it directly with any simple static server. A common choice is `http-server`:
     ```bash
-    npm install
+    # Install the server globally (if you haven't already)
+    npm install -g http-server
+
+    # Run the server from the project root
+    http-server .
     ```
 
-3.  **Run the development server:**
+3.  **Access the app:**
+    Open your browser and navigate to `http://localhost:8080`. For the geolocation features to work, you must allow location permissions when prompted.
+
+## 🐳 Deployment
+
+This application is configured for easy, scalable deployment using Docker and is optimized for serverless platforms like Google Cloud Run.
+
+The included `Dockerfile` creates a production-ready Nginx image that serves the application. It's designed to be flexible by listening on the port specified by the `PORT` environment variable, which is standard for cloud platforms.
+
+### Building and Running Locally with Docker
+
+1.  **Build the Docker image:**
+    From the root of the project, run:
     ```bash
-    npm run dev
+    docker build -t safedrive-app .
     ```
 
-4.  **Open in Browser:**
-    Navigate to `http://localhost:3000` (or the port shown in terminal).
-    *Tip: Use Chrome DevTools Device Toolbar to simulate a mobile device.*
+2.  **Run the Docker container:**
+    To simulate a cloud environment, you must provide the `PORT` variable. This command runs the app on port `8080`.
+    ```bash
+    docker run -p 8080:8080 -e PORT=8080 safedrive-app
+    ```
+    You can now access the application at `http://localhost:8080`.
 
-## 📂 Project Structure
+### Deploying to Google Cloud Run
 
-```
-/src
-  /components      # Reusable UI components (HUD, Modals, Icons)
-  /hooks           # Custom React hooks (Telematics, Geolocation)
-  /screens         # Main application screens (Home, Profile, Rewards)
-  /utils           # Helper functions and Mock Auth
-  /data            # Static data (Rewards, Challenges)
-  App.tsx          # Main Router and Layout
-  index.css        # Global Styles & Tailwind Directives
-```
+This setup is ideal for Google Cloud Run. When you deploy the container, Cloud Run will automatically provide the `PORT` environment variable, and the container will start and listen correctly, resolving the initial deployment failure.
 
-## 📱 PWA Support
-This app is installable!
-- **iOS**: Open in Safari -> Share -> Add to Home Screen.
-- **Android**: Open in Chrome -> Install App.
+## 🔒 Security & Compliance
 
-## 🛠️ Tech Stack
-- **Framework**: React 19 + Vite
-- **Styling**: Tailwind CSS
-- **Maps**: Google Maps JavaScript API
-- **Icons**: Custom SVG Icons
-- **State**: LocalStorage (Persisted)
+Security is a top priority for SafeDrive. We adhere to industry best practices to protect user data and ensure a trustworthy experience.
 
-## 🚀 Deployment
+-   **Data in Transit:** All communication with backend services (even mocked ones) should be over HTTPS. The provided deployment setup assumes a production environment would be configured behind a load balancer with an SSL/TLS certificate.
+-   **User Privacy:** We are committed to user privacy. Location data is used only for trip analysis and is never shared with third parties without explicit consent. See our `PRIVACY.md` for full details.
+-   **Input Sanitization:** Although this is a frontend application, we operate on the principle of never trusting user input. Any data sent to a backend would be sanitized and validated.
+-   **Dependency Management:** In a real-world scenario with npm dependencies, we would use tools like `npm audit` or GitHub's Dependabot to monitor for vulnerabilities.
 
-For production deployment to Google Cloud Run, see [DEPLOYMENT.md](./DEPLOYMENT.md) for a comprehensive step-by-step guide.
+For a detailed breakdown of our security policies and practices, please refer to the `SECURITY.md` file.
 
-Quick deploy:
-```bash
-gcloud run deploy safedrive --source . --allow-unauthenticated
-```
+## 📈 Business Model
 
-## 🤝 Contributing
-
-Contributions are welcome! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to the branch (`git push origin feature/AmazingFeature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.
-
-### Third-Party Licenses
-
-This project uses the following third-party services and libraries:
-
-- **Google Maps Platform**: Subject to [Google Maps Platform Terms of Service](https://cloud.google.com/maps-platform/terms)
-- **Google Generative AI (Gemini)**: Subject to [Google AI Terms of Service](https://ai.google.dev/terms)
-- **React**: MIT License
-- **Tailwind CSS**: MIT License
-- **Vite**: MIT License
-
-## 🙏 Acknowledgments
-
-- Google Maps Platform for navigation and routing
-- Google Generative AI for the AI support agent
-- The React and Vite communities for excellent tooling
-
----
-
-**⚠️ Disclaimer**: SafeDrive is a demonstration app for educational purposes. Always follow local traffic laws and drive safely. This app should not replace proper attention to the road.
-
----
-
-*Built with ❤️ by Antigravity Agent*
+SafeDrive operates on a B2B2C (Business-to-Business-to-Consumer) model that creates value for both our users and our partners. For a comprehensive overview of our monetization strategy, revenue streams, and partnership opportunities, please see the `BUSINESS_MODEL.md` file.

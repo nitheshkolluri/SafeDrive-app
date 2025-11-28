@@ -1,23 +1,24 @@
 
+
 export interface GeolocationData {
-    latitude: number;
-    longitude: number;
-    speed: number | null; // km/h
-    accuracy: number;
-    heading: number | null; // degrees from north
+  latitude: number;
+  longitude: number;
+  speed: number | null; // km/h
+  accuracy: number;
+  heading: number | null; // degrees from north
 }
 
 export interface DeviceMotionData {
-    acceleration: {
-        x: number | null;
-        y: number | null;
-        z: number | null;
-    };
-    rotationRate: {
-        alpha: number | null; // z-axis
-        beta: number | null;  // x-axis
-        gamma: number | null; // y-axis
-    };
+  acceleration: {
+    x: number | null;
+    y: number | null;
+    z: number | null;
+  };
+  rotationRate: {
+    alpha: number | null; // z-axis
+    beta: number | null;  // x-axis
+    gamma: number | null; // y-axis
+  };
 }
 
 export interface DeviceOrientationData {
@@ -27,7 +28,19 @@ export interface DeviceOrientationData {
 }
 
 
-export type DrivingEventType = 'SPEEDING' | 'HARSH_BRAKING' | 'HARSH_ACCELERATION' | 'SHARP_TURN' | 'PHONE_DISTRACTION' | 'PHONE_NOT_STABLE' | 'SMOOTH_BRAKING' | 'SAFE_DISTANCE' | 'CRASH' | 'POTHOLE';
+export type DrivingEventType = 
+    | 'SPEEDING' 
+    | 'HARSH_BRAKING' 
+    | 'HARSH_ACCELERATION' 
+    | 'SHARP_TURN' 
+    | 'PHONE_DISTRACTION' 
+    | 'PHONE_NOT_STABLE' 
+    | 'SMOOTH_BRAKING' 
+    | 'SAFE_DISTANCE' 
+    | 'CRASH' 
+    | 'PASSENGER_DETECTED'
+    | 'SCHOOL_ZONE_SPEEDING' // New
+    | 'WEATHER_UNSAFE_SPEED'; // New
 
 export interface DrivingEvent {
     type: DrivingEventType;
@@ -36,18 +49,21 @@ export interface DrivingEvent {
     points: number; // Negative for demerits, positive for rewards
 }
 
+export type TripValidity = 'VALID' | 'INVALID_TRAIN' | 'INVALID_BUS' | 'INVALID_PASSENGER';
+
 export interface Trip {
-    id: string;
-    startTime: number;
-    endTime: number;
-    distance: number; // in km
-    duration: number; // in seconds
-    points: number;
-    maxSpeed: number; // km/h
-    complianceScore: number; // 0-100
-    events: DrivingEvent[];
-    startName: string;
-    endName?: string; // Optional for Free Drive
+  id: string;
+  startTime: number;
+  endTime: number;
+  distance: number; // in km
+  duration: number; // in seconds
+  points: number;
+  maxSpeed: number; // km/h
+  complianceScore: number; // 0-100
+  events: DrivingEvent[];
+  startName: string;
+  endName?: string; // Optional for Free Drive
+  validity: TripValidity;
 }
 
 export interface UserStats {
@@ -79,9 +95,9 @@ export interface Challenge {
 }
 
 
-export type Screen = 'home' | 'profile' | 'rewards' | 'support' | 'potholes';
+export type Screen = 'home' | 'profile' | 'rewards' | 'support';
 
-export type SetupMode = 'mount' | 'carplay' | 'handheld';
+export type SetupMode = 'mount' | 'carplay' | 'passenger';
 
 export interface LatLng {
     lat: number;
@@ -101,6 +117,7 @@ export interface Route {
         totalDistance: number; // meters
         totalTime: number; // seconds
     };
+    summaryText: string;
 }
 
 export type POIType = 'cafe' | 'restaurant' | 'attraction' | 'generic';
@@ -134,3 +151,5 @@ export interface User {
     isGuest: boolean;
     theme?: 'light' | 'dark';
 }
+
+export type WeatherCondition = 'clear' | 'rain' | 'snow' | 'unknown';
