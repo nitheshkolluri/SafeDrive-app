@@ -17,8 +17,15 @@ Your privacy is fundamental to the SafeDrive experience. We are committed to bei
     -   Calculate your trip distance, duration, and points.
     -   Analyze driving events (speeding, harsh braking) to calculate your safety score.
     -   Improve the accuracy of our driving analysis algorithms.
+    -   **Road Hazard Reporting:** If you voluntarily report a hazard (e.g., pothole), we collect the location and type of hazard to warn other users.
 
-### 3. Application Usage Data
+### 3. Vehicle Health Data
+
+-   **What:** Vehicle make, model, year, and odometer readings you voluntarily provide.
+-   **Why:** To provide maintenance reminders (e.g., oil changes) and estimate fuel efficiency.
+-   **Service Connect:** We may suggest third-party services (mechanics) based on your vehicle's maintenance needs. We do *not* share your vehicle data with these partners unless you explicitly tap to book a service.
+
+### 4. Application Usage Data
 
 -   **What:** General interaction data, such as which features you use, button clicks, and screen views. This data is anonymized.
 -   **Why:** To understand how our users interact with the app, identify areas for improvement, and fix bugs.
