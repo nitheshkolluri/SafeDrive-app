@@ -1,4 +1,3 @@
-
 export interface GeolocationData {
   latitude: number;
   longitude: number;
@@ -43,7 +42,9 @@ export type DrivingEventType =
     | 'PHONE_TOUCH'
     | 'TRIP_INVALIDATED_PHONE_USE'
     | 'UNSAFE_CORNERING'
-    | 'AGGRESSIVE_LANE_CHANGE';
+    | 'AGGRESSIVE_LANE_CHANGE'
+    | 'SWERVE'          // NEW: High speed weaving
+    | 'PHONE_FUMBLE';   // NEW: Rotating phone while driving
 
 export type SeverityLevel = 'MINOR' | 'MODERATE' | 'SEVERE' | 'CRITICAL';
 
@@ -185,18 +186,23 @@ export interface User {
     circleIds?: string[]; // V2: Multi-circle support
     currentScore?: number; 
     lastActive?: number; 
+    createdAt?: number | any; // Supports Timestamp or number
 }
 
 // --- CIRCLES V2 TYPES ---
 
 export type CircleRole = 'OWNER' | 'ADMIN' | 'MEMBER' | 'READ_ONLY';
 
+// REDESIGN: New Privacy Modes
+export type CirclePrivacyMode = 'GHOST' | 'BEACON' | 'RADAR';
+
 export interface CircleSettings {
     autoJoin: boolean;
     requireApproval: boolean;
-    shareLocationDefault: 'opt-out' | 'opt-in';
     poolingEnabled: boolean;
     challengesEnabled: boolean;
+    shareLocationDefault: CirclePrivacyMode;
+    fineLocationByAdmin?: boolean;
 }
 
 export interface CircleAnalyticsSummary {
@@ -204,14 +210,29 @@ export interface CircleAnalyticsSummary {
     totalPoints: number;
     overspeedCount: number;
     lastUpdated: number; // timestamp
+    weeklyDistance: number;
+    squadStreak: number;
+}
+
+// REDESIGN: Squad Mission
+export interface CircleMission {
+    id: string;
+    title: string;
+    description: string;
+    targetValue: number;
+    currentValue: number;
+    unit: 'km' | 'points' | 'trips';
+    deadline: number;
+    reward: string; // e.g. "2x Points Multiplier"
+    status: 'ACTIVE' | 'COMPLETED' | 'FAILED';
 }
 
 export interface Circle {
     id: string;
     ownerId: string;
     name: string;
-    inviteCode: string; // Legacy
-    memberIds: string[]; // Legacy & V2 (Syncd)
+    inviteCode: string; 
+    memberIds: string[]; 
     createdAt: number;
     
     // V2 Fields
@@ -219,6 +240,7 @@ export interface Circle {
     avatarUrl?: string;
     settings?: CircleSettings;
     analyticsSummary?: CircleAnalyticsSummary;
+    currentMission?: CircleMission; // The active group goal
     v2_enabled?: boolean;
 }
 
@@ -226,8 +248,13 @@ export interface CircleMember {
     uid: string;
     role: CircleRole;
     joinedAt: number;
-    shareLocation: boolean;
+    privacyMode: CirclePrivacyMode; // Replaces shareMode
     lastActiveAt: number;
+    locationHash?: string; // Geohash for Beacon mode
+    contribution: {
+        points: number;
+        distance: number;
+    };
     // Client-side joins
     userProfile?: Partial<User>; 
 }
@@ -235,12 +262,21 @@ export interface CircleMember {
 export interface CircleInvite {
     id: string;
     circleId: string;
-    token: string; // Hashed in DB, plain in Link
+    token: string; 
     createdBy: string;
     expiresAt: number;
     maxUses: number;
     uses: number;
     requireApproval: boolean;
+}
+
+export interface CircleEvent {
+    id: string;
+    type: string;
+    sourceUid?: string;
+    description?: string;
+    timestamp: number;
+    metadata?: Record<string, any>;
 }
 
 // ------------------------

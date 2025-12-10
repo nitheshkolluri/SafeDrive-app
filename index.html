@@ -70,6 +70,40 @@
             -webkit-backdrop-filter: blur(16px);
             border: 1px solid rgba(0, 0, 0, 0.05);
         }
+
+        /* --- Google Maps Autocomplete Dark Mode Overrides --- */
+        .pac-container {
+            background-color: #0f172a !important; /* Dark 900 */
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            border-radius: 12px !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5) !important;
+            font-family: 'DM Sans', sans-serif !important;
+            margin-top: 8px !important;
+            padding-top: 8px !important;
+            z-index: 10005 !important;
+        }
+        .pac-item {
+            border-top: 1px solid rgba(255, 255, 255, 0.05) !important;
+            color: #94a3b8 !important; /* Slate 400 */
+            cursor: pointer !important;
+            padding: 12px 16px !important;
+            font-size: 14px !important;
+        }
+        .pac-item:hover {
+            background-color: rgba(255, 255, 255, 0.05) !important;
+        }
+        .pac-item-query {
+            color: #ffffff !important;
+            font-weight: 700 !important;
+            font-size: 14px !important;
+        }
+        .pac-icon {
+            filter: invert(1) opacity(0.5) !important; /* Make icons white-ish */
+        }
+        .pac-logo:after {
+            filter: grayscale(100%) brightness(200%) !important; /* Lighten logo */
+            opacity: 0.5 !important;
+        }
     </style>
     <script>
       tailwind.config = {
@@ -183,18 +217,19 @@
 <script type="importmap">
 {
   "imports": {
-    "react": "https://esm.sh/react@18.2.0",
-    "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
-    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "react": "https://esm.sh/react@19.2.1",
+    "react/jsx-runtime": "https://esm.sh/react@19.2.1/jsx-runtime",
+    "react-dom/client": "https://esm.sh/react-dom@19.2.1/client",
+    "react-dom": "https://esm.sh/react-dom@19.2.1",
     "@google/genai": "https://esm.sh/@google/genai@0.1.1",
     "firebase/app": "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js",
     "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js",
     "firebase/analytics": "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js",
     "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js",
     "firebase/storage": "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
-    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "firebase/database": "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+    "react/": "https://aistudiocdn.com/react@^19.2.1/",
     "firebase/": "https://aistudiocdn.com/firebase@^12.6.0/"
   }
 }
