@@ -1,5 +1,6 @@
 
-export const GOOGLE_MAPS_API_KEY = 'AIzaSyA5vGsVKm_07qTQioFwCRmkaoRPIYj7FtY';
+export const GOOGLE_MAPS_API_KEY = import.meta.env.VITE_GOOGLE_MAPS_API_KEY || '';
+export const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 
 export const FEATURE_FLAGS = {
     USE_FUSED_HEADING: true,
@@ -11,17 +12,17 @@ export const NAV_CONFIG = {
     // Sensor Fusion & Smoothing
     HEADING_SMOOTHING_FACTOR: 0.08, // Lower = Smoother, Higher = More Responsive
     SPEED_SMOOTHING_FACTOR: 0.15,
-    
+
     // GPS Signal Health
     GPS_TIMEOUT_MS: 10000, // 10s without update = Signal Lost
     GPS_ACCURACY_THRESHOLD_M: 40, // Ignore speeding/penalties if accuracy is worse than this
-    
+
     // Rerouting & Guidance
     OFF_ROUTE_THRESHOLD_M: 25, // Strict reroute trigger
     SNAP_TO_ROUTE_THRESHOLD_M: 30, // Distance to snap location for visual/calc
-    
+
     // Speeding Logic
-    SPEED_TOLERANCE_KMH: 4, 
+    SPEED_TOLERANCE_KMH: 4,
     SPEED_SUSTAIN_TIME_MS: 3000,
 
     // Voice Guidance Thresholds (Meters)
@@ -36,9 +37,9 @@ export const VIOLATION_CONFIG = {
         BUFFER_SECONDS: 3,
         RECURRING_PENALTY_SECONDS: 5, // Deduct points every 5s if still speeding
         MINOR_THRESHOLD: 5,
-        MODERATE_THRESHOLD: 10, 
-        SERIOUS_THRESHOLD: 20, 
-        CRITICAL_THRESHOLD: 30, 
+        MODERATE_THRESHOLD: 10,
+        SERIOUS_THRESHOLD: 20,
+        CRITICAL_THRESHOLD: 30,
         POINTS: {
             MINOR: -3,
             MODERATE: -7,
@@ -50,8 +51,8 @@ export const VIOLATION_CONFIG = {
     G_FORCE: {
         HARSH_BRAKING: -8.5,
         HARSH_ACCEL: 8.5,
-        CORNERING: 5.5, 
-        LANE_CHANGE: 3.5, 
+        CORNERING: 5.5,
+        LANE_CHANGE: 3.5,
         CRASH: 18.0
     },
     SAFE_STOP: {
