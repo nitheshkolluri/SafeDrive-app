@@ -1,0 +1,108 @@
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // --- Helper Functions ---
+    
+    // Check if user is logged in
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Check if user owns the document (Strict Privacy)
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Check if user is a member of the circle (Fast check via parent doc array)
+    function isCircleMember(circleId) {
+      return isAuthenticated() && 
+        request.auth.uid in get(/databases/$(database)/documents/safetyCircles/$(circleId)).data.memberIds;
+    }
+
+    // Check if user is Admin or Owner of a circle (Detailed check via subcollection)
+    function isCircleAdmin(circleId) {
+      let role = get(/databases/$(database)/documents/safetyCircles/$(circleId)/members/$(request.auth.uid)).data.role;
+      return isAuthenticated() && (role == 'OWNER' || role == 'ADMIN');
+    }
+
+    // --- 1. Users Collection ---
+    // Strict privacy: Only the user can read/write their own data.
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+
+      // Recursive match for all subcollections (trips, vehicles, etc)
+      match /{document=**} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+
+    // --- 2. Safety Circles V2 ---
+    match /safetyCircles/{circleId} {
+      
+      // Create: Any authenticated user can create a circle
+      allow create: if isAuthenticated();
+      
+      // Read (List/Get): Allowed if you are the owner OR inside the memberIds array
+      allow read: if isAuthenticated() && (
+        resource.data.ownerId == request.auth.uid || 
+        request.auth.uid in resource.data.memberIds
+      );
+      
+      // Update: 
+      // 1. Admins/Owners changing settings
+      // 2. Users adding THEMSELVES to the memberIds array (Joining)
+      // 3. Users removing THEMSELVES (Leaving)
+      allow update: if isAuthenticated() && (
+        resource.data.ownerId == request.auth.uid || 
+        isCircleAdmin(circleId) ||
+        // Allow atomic join (adding self to array)
+        (request.resource.data.memberIds.size() == resource.data.memberIds.size() + 1 && 
+         request.auth.uid in request.resource.data.memberIds) ||
+        // Allow leaving (removing self from array)
+        (request.resource.data.memberIds.size() == resource.data.memberIds.size() - 1 &&
+         !request.resource.data.memberIds.hasAny([request.auth.uid]))
+      );
+
+      // Delete: Owner OR Admin can delete the circle
+      allow delete: if isAuthenticated() && (resource.data.ownerId == request.auth.uid || isCircleAdmin(circleId));
+
+      // -- Members Subcollection --
+      match /members/{memberId} {
+        // Read: Any member of the circle can see the list
+        allow read: if isCircleMember(circleId);
+        
+        // Write: 
+        // 1. Admin/Owner can manage others (kick, promote)
+        // 2. User can write their OWN record (Join/Leave/Toggle Location)
+        allow write: if isCircleAdmin(circleId) || request.auth.uid == memberId;
+      }
+
+      // -- Invites Subcollection --
+      match /invites/{inviteId} {
+        // Only admins can see tokens or create them
+        allow read, write: if isCircleAdmin(circleId);
+      }
+      
+      // -- Analytics Subcollection --
+      match /analytics/{periodId} {
+        // All members can see the leaderboard/charts
+        allow read: if isCircleMember(circleId);
+      }
+    }
+
+    // --- 3. Public Invites (Lookup) ---
+    match /publicInvites/{tokenId} {
+      // Public read required to validate a link before logging in/joining
+      allow read: if true;
+      // Creation restricted to auth users (when generating a link)
+      allow create: if isAuthenticated();
+    }
+
+    // --- 4. Feedback ---
+    match /feedback/{feedbackId} {
+      allow create: if isAuthenticated();
+    }
+  }
+}

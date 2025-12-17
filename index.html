@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    
+    <!-- PWA Configuration -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SafeDrive">
+    <meta name="theme-color" content="#020617">
+    
+    <title>SafeDrive</title>
+    
+    <!-- PWA Icons -->
+    <link id="apple-icon" rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN88F/qPwAI8wNPc0EU8AAAAABJRU5ErkJggg==" sizes="180x180">
+    <link rel="icon" type="image/svg+xml" href="/logo.svg?v=9">
+    <link rel="mask-icon" href="/logo.svg?v=9" color="#0891b2">
+    <link rel="manifest" href="/manifest.json?v=9">
+    
+    <meta property="og:image" content="/logo.svg?v=9">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;0,800;1,400&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <style>
+        html, body {
+            height: 100%;
+            height: 100dvh;
+            overflow: hidden;
+            padding: 0;
+            margin: 0;
+            overscroll-behavior: none;
+            /* Default to a pleasant dark slate to prevent white flash */
+            background-color: #020617; 
+        }
+        body { font-family: 'DM Sans', sans-serif; }
+        .font-display { font-family: 'Exo 2', sans-serif; }
+        
+        * {
+            scrollbar-width: none !important;
+            -ms-overflow-style: none !important;
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+        
+        *::-webkit-scrollbar {
+            display: none !important;
+        }
+
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 20px); }
+        .pt-safe { padding-top: env(safe-area-inset-top, 20px); }
+        .mb-safe { margin-bottom: env(safe-area-inset-bottom, 20px); }
+        
+        /* Glassmorphism Utilities */
+        .glass-panel {
+            background: rgba(15, 23, 42, 0.75); /* Dark Slate with opacity */
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .glass-panel-light {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+        }
+    </style>
+    <script>
+      tailwind.config = {
+        darkMode: 'class',
+        theme: {
+            extend: {
+                fontFamily: {
+                    sans: ['DM Sans', 'sans-serif'],
+                    display: ['Exo 2', 'sans-serif'],
+                },
+                colors: {
+                    // Mapping "dark" to Slate for a consistent professional dark mode
+                    dark: {
+                        50: '#f8fafc',
+                        100: '#f1f5f9',
+                        200: '#e2e8f0',
+                        300: '#cbd5e1',
+                        400: '#94a3b8',
+                        500: '#64748b',
+                        600: '#475569',
+                        700: '#334155',
+                        800: '#1e293b',
+                        900: '#0f172a',
+                        950: '#020617', 
+                    },
+                    // Mapping "void" to very dark slate/black for depth
+                    void: {
+                        600: '#1e293b',
+                        700: '#0f172a',
+                        800: '#020617',
+                        900: '#000000',
+                        950: '#000000', 
+                    },
+                    // Brand colors refined for readability and pleasantness
+                    brand: {
+                        cyan: '#06b6d4',   // Cyan 500 - Accessible on white & black
+                        purple: '#8b5cf6', // Violet 500
+                        pink: '#f43f5e',   // Rose 500
+                        yellow: '#eab308', // Yellow 500
+                        success: '#10b981', // Emerald 500
+                        danger: '#ef4444', // Red 500
+                    },
+                    accent: {
+                        300: '#67e8f9',
+                        400: '#22d3ee',
+                        500: '#06b6d4',
+                    }
+                },
+                backgroundImage: {
+                    'gradient-lux': 'linear-gradient(135deg, #06b6d4 0%, #8b5cf6 100%)',
+                    'gradient-aurora': 'linear-gradient(135deg, #22d3ee 0%, #a855f7 100%)',
+                    'gradient-dark': 'linear-gradient(180deg, rgba(2,6,23,0) 0%, rgba(2,6,23,0.95) 100%)',
+                },
+                boxShadow: {
+                    'glow-cyan': '0 0 20px rgba(6, 182, 212, 0.4)',
+                    'glow-purple': '0 0 20px rgba(139, 92, 246, 0.4)',
+                    'glass': '0 8px 32px 0 rgba(0, 0, 0, 0.2)',
+                },
+                animation: {
+                    'fade-in-up': 'fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards',
+                    'pulse-glow': 'pulseGlow 3s infinite',
+                },
+                keyframes: {
+                    fadeInUp: {
+                        '0%': { opacity: '0', transform: 'translateY(20px)' },
+                        '100%': { opacity: '1', transform: 'translateY(0)' },
+                    },
+                    pulseGlow: {
+                        '0%, 100%': { opacity: '1', boxShadow: '0 0 15px rgba(6, 182, 212, 0.2)' },
+                        '50%': { opacity: '0.8', boxShadow: '0 0 30px rgba(6, 182, 212, 0.5)' },
+                    }
+                }
+            }
+        }
+      }
+    </script>
+    
+    <!-- Icon Generator Script -->
+    <script>
+        (function() {
+            if (!/iphone|ipad|ipod/.test(navigator.userAgent.toLowerCase())) return;
+            var size = 512;
+            var canvas = document.createElement('canvas');
+            canvas.width = size;
+            canvas.height = size;
+            var ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#020617';
+            ctx.fillRect(0, 0, size, size);
+            ctx.save();
+            ctx.translate(size/2, size/2);
+            ctx.scale(4.5, 4.5); 
+            ctx.translate(-50, -50); 
+            ctx.fillStyle = '#06b6d4';
+            ctx.beginPath();
+            ctx.moveTo(40, 20);
+            ctx.lineTo(60, 20);
+            ctx.quadraticCurveTo(75, 20, 75, 35);
+            ctx.lineTo(75, 60);
+            ctx.quadraticCurveTo(75, 70, 65, 70);
+            ctx.lineTo(35, 70);
+            ctx.quadraticCurveTo(25, 70, 25, 60);
+            ctx.lineTo(25, 35);
+            ctx.quadraticCurveTo(25, 20, 40, 20);
+            ctx.fill();
+            ctx.restore();
+            var link = document.getElementById('apple-icon');
+            if (link) link.href = canvas.toDataURL('image/png');
+        })();
+    </script>
+    
+<script type="importmap">
+{
+  "imports": {
+    "react": "https://esm.sh/react@18.2.0",
+    "react/jsx-runtime": "https://esm.sh/react@18.2.0/jsx-runtime",
+    "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+    "react-dom": "https://esm.sh/react-dom@18.2.0",
+    "@google/genai": "https://esm.sh/@google/genai@0.1.1",
+    "firebase/app": "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js",
+    "firebase/auth": "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js",
+    "firebase/analytics": "https://www.gstatic.com/firebasejs/10.12.0/firebase-analytics.js",
+    "firebase/firestore": "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js",
+    "firebase/storage": "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/",
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "firebase/": "https://aistudiocdn.com/firebase@^12.6.0/"
+  }
+}
+</script>
+<link rel="stylesheet" href="/index.css">
+</head>
+<body class="bg-slate-50 dark:bg-dark-950 text-slate-900 dark:text-white transition-colors duration-300 overflow-hidden fixed inset-0">
+    <div id="root" class="h-full w-full overflow-hidden"></div>
+    <script type="module" src="/index.tsx"></script>
+</body>
+</html>
